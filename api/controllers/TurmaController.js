@@ -50,6 +50,16 @@ class TurmaController {
             return res.status(500).json(err.message)
         }
     }
+
+    static async restauraTurma(req,res){
+        const {id} = req.params
+        try {
+            await database.Turmas.restore({where: {id: Number(id)}})
+            res.status(200).json({mensagem: `id ${id} restaurado`})
+        } catch (err) {
+            return res.status(500).json(err.message)
+        }
+    }
 }
 
 

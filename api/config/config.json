@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "root",
-    "password": "l0rd3d0m4l",
+    "username": "orm-sequelize",
+    "password": "root123",
     "database": "escola-ingles",
     "host": "127.0.0.1",
     "dialect": "mysql"

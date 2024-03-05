@@ -1,9 +1,17 @@
 const database = require('../models');
 
 class PessoaController {
+    static async pegaPessoasAtivas(req,res){
+        try{
+            const pessoasAtivas = await database.Pessoas.findAll()
+            res.status(200).json(pessoasAtivas)
+        }catch(err){
+            return res.status(500).json(err.message)
+        }
+    }
     static async pegaTodasAsPessoas(req,res){
         try{
-            const todasAsPessoas = await database.Pessoas.findAll()
+            const todasAsPessoas = await database.Pessoas.scope('todos').findAll()
             return res.status(200).json(todasAsPessoas)
         }catch(err){
             return res.status(500).json(err.message)
@@ -46,6 +54,16 @@ class PessoaController {
         try {
             await database.Pessoas.destroy({where: {id: Number(id)}})
             res.status(200).json({mensagem: `o id ${id} deletado.`})
+        } catch (err) {
+            return res.status(500).json(err.message)
+        }
+    }
+
+    static async restauraPessoa(req,res){
+        const {id} = req.params
+        try {
+            await database.Pessoas.restore({where: {id: Number(id)}})
+            res.status(200).json({mensagem: `id ${id} restaurado`})
         } catch (err) {
             return res.status(500).json(err.message)
         }
@@ -96,6 +114,20 @@ class PessoaController {
         try {
             await database.Matriculas.destroy({where: { id: Number(matriculaId) }})
             res.status(200).json({mensagem: `o id ${matriculaId} deletado.`})
+        } catch (err) {
+            return res.status(500).json(err.message)
+        }
+    }
+
+    static async restauraMatricula(req,res){
+        const {estudanteId, matriculaId} = req.params
+        try {
+            await database.Matriculas.restore({
+                where:
+                    {id: Number(matriculaId),
+                    estudante_id: Number(estudanteId)
+                }})
+            res.status(200).json({mensagem: `id ${id} restaurado`})
         } catch (err) {
             return res.status(500).json(err.message)
         }
