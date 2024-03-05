@@ -1,9 +1,18 @@
-const database = require('../models');
+// const database = require('../models')
+// const Sequelize = require('sequelize')
+// const Op = Sequelize.Op
+const {TurmasServices} = require('../services')
+const turmasServices = new TurmasServices()
 
 class TurmaController {
     static async pegaTodasAsTurmas(req,res){
+        const {data_inicial, data_final} = req.query
+        const where = {}
+        data_inicial || data_final ?  where.data_inicio = {} :null
+        data_inicial ? where.data_inicio[Op.gte] = data_inicial : null
+        data_final ? where.data_inicio[Op.lte] = data_final : null
         try{
-            const todasAsTurmas = await database.Turmas.findAll()
+            const todasAsTurmas = await database.Turmas.findAll({where})
             return res.status(200).json(todasAsTurmas)
         }catch(err){
             return res.status(500).json(err.message)
@@ -13,7 +22,7 @@ class TurmaController {
     static async buscaTurma(req,res){
         const {id} = req.params
         try {
-            const turma = await database.Turmas.findOne({ where: {id: Number(id)}})
+            const turma = await turmasServices.pegaUmRegistro(Number(id))
             return res.status(200).json(turma)
         } catch (err) {
             return res.status(500).json(err.message)
